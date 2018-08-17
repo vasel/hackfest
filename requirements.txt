@@ -65,7 +65,6 @@ locket==0.2.0
 lxml==3.6.4
 MarkupSafe==0.23
 matplotlib==1.5.3
-menuinst==1.4.1
 mistune==0.7.3
 mpmath==0.19
 multipledispatch==0.4.8
