@@ -11,32 +11,45 @@ def normaliza(termo):
 #metodo de entrada
 def lista_medicamentos(termo):
     termo = normaliza(termo)
-    dfl = dfm[dfm['PRINCIPIO ATIVO'].str.contains(termo)]
-    dfl = retira_nao_tem_no_sus(dfl)
+    dfl = dfListaRename[
+        dfListaRename["PRINCIPIO"].str.contains(termo)]  # dfm[dfm['PRINCIPIO ATIVO'].str.contains(termo)]
+    # dfl = retira_nao_tem_no_sus(dfl)
     if (dfl.empty):
         return lista_por_nome_comercial(termo)
     else:
-        return dfl.head(5)
+        return dfl[colunas_rename].head(10)
+
+
+def todos_remedios(termo):
+    termo = normaliza(termo)
+    dfl = dfListaProdutos[dfListaProdutos['PRINCIPIO ATIVO'].str.contains(termo)]
+    if (dfl.empty):
+        dfl = dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]
+    return dfl.head(100)
 
 def lista_por_nome_comercial(termo):
-    dfl = dfm[dfm['PRODUTO'].str.contains(termo)]
+    termo = normaliza(termo)
+    dfl = dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]
+    if (dfl.empty):
+        return pd.DataFrame(['0', termo + ' não encontrado', ''])
     dfl = retira_nao_tem_no_sus(dfl)
     if (dfl.empty):
-        return pd.DataFrame(['0', 'Remédio não encontrado ou não disponivel', ''])
+        return pd.DataFrame(['0', termo + ' não disponivel no SUS', ''])
     else:
-        return dfl.head(5)
+        return dfl.head(10)
 
 def retira_nao_tem_no_sus(lista):
     for row in lista.iterrows():
-        #print  (row[0])
         if not tem_no_sus(str(row[0])):
+            print(str(row[0]))
             lista = lista.drop(row[0])
             #print('nao tem')
     return lista
 
 
 def tem_no_sus(remedio):
-    return True  # False #True
+    remedio = normaliza(remedio).split('0')[0]
+    return not dfListaRename[dfListaRename["PRINCIPIO"].str.contains(remedio)].empty
 
 def grava_falta_remedio (posto,remedio):
     try:
@@ -49,7 +62,14 @@ def grava_falta_remedio (posto,remedio):
 def retorna_score_posto (posto,remedio):
     try:
         score = 0
-        BASE = 1 ** (1 / 6)
+        # base para o decaimento exponencial: score += base ** (dataAtual - dataDenuncia[i])
+        # ex.: dias  = 7    (uma semana)
+        #      fator = 1/10
+        # ou seja, o score de uma denúncia hoje, equivale ao de 10 denúncias há 7 dias
+        fator = 1 / 10
+        dias = 7
+        BASE = fator ** (1 / dias)
+
         qtde_denuncias = len(denuncias[(posto, remedio)])
         for denuncia in denuncias[(posto, remedio)]:
             dias = (datetime.datetime.now() - denuncia).days
@@ -72,7 +92,14 @@ df = pd.read_json('listaISO.json')  # , encoding='UTF8')
 #    df = pd.read_json('https://raw.githubusercontent.com/vasel/hackfest/master/listaUTF8.json')  # , orient='records')  # ) #, lines=True)
 
 
-dfm = df[["PRINCIPIO ATIVO", "PRODUTO", "APRESENTACAO"]]
+dfListaProdutos = df[["PRINCIPIO ATIVO", "PRODUTO", "APRESENTACAO"]]
+
+colunas_rename = ["PRINCIPIO ATIVO", "COMPOSICAO", "COMPONENTE"]
+dfListaRename = pd.read_csv('listaRENAME.csv', names=colunas_rename)
+dfListaRename['PRINCIPIO'] = dfListaRename["PRINCIPIO ATIVO"].apply(normaliza)
+dfListaRename.rename(index=str, columns={"COMPONENTE": "APRESENTACAO", "COMPOSICAO": "PRODUTO"})
+
+
 denuncias=dict()
 # print (lista_medicamentos('tylenol'))
 #print(lista_medicamentos('CITRATO'))
