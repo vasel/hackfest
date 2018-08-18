@@ -48,7 +48,15 @@ def grava_falta_remedio (posto,remedio):
 
 def retorna_score_posto (posto,remedio):
     try:
-        return len(denuncias[(posto, remedio)])
+        score = 0
+        BASE = 0.3
+        qtde_denuncias = len(denuncias[(posto, remedio)])
+        for denuncia in denuncias[(posto, remedio)]:
+            dias = (datetime.datetime.now() - denuncia).days
+            # print (dias)
+            if dias <= 30:
+                score += BASE ** dias
+        return score
     except:
         return 0
 
