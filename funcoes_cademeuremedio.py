@@ -7,7 +7,9 @@ import unidecode
 
 def normaliza(termo):
     return (
-        unidecode.unidecode(termo.upper()).replace(",", "").replace('.', '').replace(';', '').replace('"', '').replace(
+        unidecode.unidecode(termo.upper()).replace(",", "").replace('.', '').replace(';', '').replace('  ',
+                                                                                                      ' ').replace('"',
+                                                                                                                   '').replace(
             '"', ''))  # .strip()
 
 #metodo de entrada
@@ -18,15 +20,19 @@ def lista_medicamentos_sus(termo):
     # dfl = retira_nao_tem_no_sus(dfl)
     if (dfl.empty):
         # encontra por nome comercial
-        # principios = busca_principio_por_nome_comercial(termo)
-        # for principio in principios:
-        #     result = dfListaRename["PRINCIPIO"].str.contains(principio[0])
-        #     if not result.empty:
-        #         dfl = pd.concat(dfl,result)
+        principios = busca_principio_por_nome_comercial(termo)
+        for principio in principios:
+            result = dfListaRename[dfListaRename["remedio"].str.contains(principio)]  # .split(';')[0].split(' ')[0])]
+            if not result.empty:
+                result['comercial'] = termo
+                if dfl.empty:
+                    dfl = result
+                else:
+                    dfl = pd.concat(dfl, result)
         if not dfl.empty:
-            return dfl
+            return dfl[['id', 'remedio', 'comercial']].head(10)
     else:
-        return dfl[['id', 'remedio']].head(10)
+        return dfl[['id', 'remedio', 'comercial']].head(10)
 
     return pd.DataFrame({"ERROR": termo + ' não encontrado.'}, index=[0])
 
@@ -120,7 +126,7 @@ dfListaRename['remedio'] = dfListaRename['PRINCIPIO'] + dfListaRename["COMPOSICA
 
 dfListaRename['id'] = dfListaRename.index
 dfListaRename.rename(index=str, columns={"COMPONENTE": "APRESENTACAO", "COMPOSICAO": "PRODUTO"})
-
+dfListaRename['comercial'] = ""
 
 denuncias=dict()
 # print (lista_medicamentos('tylenol'))
