@@ -96,7 +96,9 @@ dfListaProdutos = df[["PRINCIPIO ATIVO", "PRODUTO", "APRESENTACAO"]]
 
 colunas_rename = ["PRINCIPIO ATIVO", "COMPOSICAO", "COMPONENTE"]
 dfListaRename = pd.read_csv('listaRENAME.csv', names=colunas_rename)
+colunas_rename.insert(3, 'id')
 dfListaRename['PRINCIPIO'] = dfListaRename["PRINCIPIO ATIVO"].apply(normaliza)
+dfListaRename['id'] = dfListaRename.index
 dfListaRename.rename(index=str, columns={"COMPONENTE": "APRESENTACAO", "COMPOSICAO": "PRODUTO"})
 
 
