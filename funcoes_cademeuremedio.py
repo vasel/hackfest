@@ -83,9 +83,9 @@ def grava_falta_remedio (posto,remedio):
 
 def grava_falta_remedio_passado(posto, remedio, diasAtras):
     try:
-        denuncias[(posto, remedio)].insert(-1, datetime.datetime.now() - datetime.timedelta(days=diasAtras))
+        denuncias[(posto, remedio)].insert(-1, datetime.datetime.now() - datetime.timedelta(days=int(diasAtras)))
     except:
-        denuncias[(posto, remedio)] = [datetime.datetime.now() - datetime.timedelta(days=diasAtras)]
+        denuncias[(posto, remedio)] = [datetime.datetime.now() - datetime.timedelta(days=int(diasAtras))]
     return len(denuncias[(posto, remedio)])
 
 
