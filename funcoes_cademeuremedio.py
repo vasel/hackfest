@@ -1,4 +1,7 @@
+import os
+
 import pandas as pd
+
 
 #metodo de entrada
 def lista_medicamentos(termo):
@@ -48,11 +51,11 @@ def ranking(qtde):
     return str(denuncias)
 
 
-df = pd.read_json(
-    'http://github.com/vasel/hackfest/blob/master/listaUTF8.json?raw=true')  # , orient='records')  # ) #, lines=True)
-
-
-
+port = int(os.environ.get("PORT", 7777))
+# if (port == 7777):
+df = pd.read_json('listaISO.json')  # , encoding='UTF8')
+# else:
+#    df = pd.read_json('https://raw.githubusercontent.com/vasel/hackfest/master/listaUTF8.json')  # , orient='records')  # ) #, lines=True)
 
 
 dfm = df[["PRINCIPIO ATIVO", "PRODUTO", "APRESENTACAO"]]
