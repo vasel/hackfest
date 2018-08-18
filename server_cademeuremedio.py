@@ -1,6 +1,7 @@
 from flask import Flask
 import funcoes_cademeuremedio
 import pandas
+import os
 
 app = Flask(__name__)
 
@@ -33,6 +34,6 @@ def ranking(qtde):
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 7777))
     app.run(host='0.0.0.0', port=port, debug=True)
 
