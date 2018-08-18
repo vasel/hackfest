@@ -6,7 +6,9 @@ import unidecode
 
 
 def normaliza(termo):
-    return unidecode.unidecode(termo.upper()).replace(",", "").replace('.', '')
+    return (
+        unidecode.unidecode(termo.upper()).replace(",", "").replace('.', '').replace(';', '').replace('"', '').replace(
+            '"', '')).strip()
 
 #metodo de entrada
 def lista_medicamentos_sus(termo):
@@ -18,21 +20,20 @@ def lista_medicamentos_sus(termo):
         # encontra por nome comercial
         # principios = busca_nome_comercial(termo)
         # for principio in principios:
-
-        return lista_por_nome_comercial(termo)
+        #     result = dfListaRename["PRINCIPIO"].str.contains(principio[0])
+        #     if not result.empty:
+        #         dfl = pd.concat(dfl,result)
+        if not dfl.empty:
+            return dfl
     else:
         return dfl[colunas_rename].head(10)
 
+    return pd.DataFrame({"ERROR": termo + ' não encontrado.'}, index=[0])
 
 def busca_nome_comercial(termo):
     dfl = dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]
-    if (dfl.empty):
-        return pd.DataFrame(['0', termo + ' não encontrado', ''])
-    dfl = retira_nao_tem_no_sus(dfl)
-    if (dfl.empty):
-        return pd.DataFrame(['0', termo + ' não disponivel no SUS', ''])
-    else:
-        return dfl.head(10)
+    return dfl['PRINCIPIO ATIVO']
+
 
 def todos_remedios(termo):
     termo = normaliza(termo)
@@ -112,6 +113,10 @@ colunas_rename = ["PRINCIPIO ATIVO", "COMPOSICAO", "COMPONENTE"]
 dfListaRename = pd.read_csv('listaRENAME.csv', names=colunas_rename)
 colunas_rename.insert(3, 'id')
 dfListaRename['PRINCIPIO'] = dfListaRename["PRINCIPIO ATIVO"].apply(normaliza)
+dfListaRename['COMPOSICAO'] = dfListaRename["COMPOSICAO"].apply(normaliza)
+dfListaRename['COMPONENTE'] = dfListaRename["COMPONENTE"].apply(normaliza)
+
+
 dfListaRename['id'] = dfListaRename.index
 dfListaRename.rename(index=str, columns={"COMPONENTE": "APRESENTACAO", "COMPOSICAO": "PRODUTO"})
 
