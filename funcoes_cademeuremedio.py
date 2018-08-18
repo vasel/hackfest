@@ -1,5 +1,3 @@
-# coding=utf-8
-# import requests
 import pandas as pd
 
 #metodo de entrada
@@ -53,7 +51,7 @@ def ranking(qtde):
 df = pd.read_json('listacmedAnsi.json') #, orient='records')  # ) #, lines=True)
 dfm = df[["PRINCIPIO ATIVO", "PRODUTO", "APRESENTACAO"]]
 denuncias=dict()
-#print (lista_medicamentos('viagra'))
+# print (lista_medicamentos('tylenol'))
 #print(lista_medicamentos('CITRATO'))
 
 

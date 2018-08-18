@@ -1,7 +1,8 @@
-from flask import Flask
-import funcoes_cademeuremedio
-import pandas
 import os
+
+from flask import Flask
+
+import funcoes_cademeuremedio
 
 app = Flask(__name__)
 
