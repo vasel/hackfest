@@ -8,7 +8,11 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return "funcoes: " \
+           "/lista/<termo>" \
+           "/denuncia/<cod_posto>/<ean_medicamento>" \
+           "/score/<cod_posto>/<ean_medicamento>" \
+           "/ranking/<qtde> "
 
 @app.route('/lista/<termo>')
 def lista(termo):
@@ -31,7 +35,7 @@ def score(cod_posto,ean_medicamento):
 
 @app.route('/ranking/<qtde>')
 def ranking(qtde):
-    return funcoes_cademeuremedio.retorna_score_posto(cod_posto,ean_medicamento)
+    return funcoes_cademeuremedio.retorna_score_posto(qtde)
 
 
 if __name__ == "__main__":
