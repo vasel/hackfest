@@ -48,7 +48,8 @@ def ranking(qtde):
     return str(denuncias)
 
 
-df = pd.read_json('listacmedAnsi.json') #, orient='records')  # ) #, lines=True)
+df = pd.read_json(
+    'https://github.com/vasel/hackfest/blob/master/listacmedANSI.json?raw=true')  # , orient='records')  # ) #, lines=True)
 dfm = df[["PRINCIPIO ATIVO", "PRODUTO", "APRESENTACAO"]]
 denuncias=dict()
 # print (lista_medicamentos('tylenol'))
