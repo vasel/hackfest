@@ -8,17 +8,17 @@ import unidecode
 def normaliza(termo):
     return (
         unidecode.unidecode(termo.upper()).replace(",", "").replace('.', '').replace(';', '').replace('"', '').replace(
-            '"', '')).strip()
+            '"', ''))  # .strip()
 
 #metodo de entrada
 def lista_medicamentos_sus(termo):
     termo = normaliza(termo)
     dfl = dfListaRename[
-        dfListaRename["PRINCIPIO"].str.contains(termo)]  # dfm[dfm['PRINCIPIO ATIVO'].str.contains(termo)]
+        dfListaRename["remedio"].str.contains(termo)]  # dfm[dfm['PRINCIPIO ATIVO'].str.contains(termo)]
     # dfl = retira_nao_tem_no_sus(dfl)
     if (dfl.empty):
         # encontra por nome comercial
-        # principios = busca_nome_comercial(termo)
+        # principios = busca_principio_por_nome_comercial(termo)
         # for principio in principios:
         #     result = dfListaRename["PRINCIPIO"].str.contains(principio[0])
         #     if not result.empty:
@@ -26,11 +26,12 @@ def lista_medicamentos_sus(termo):
         if not dfl.empty:
             return dfl
     else:
-        return dfl[colunas_rename].head(10)
+        return dfl[['id', 'remedio']].head(10)
 
     return pd.DataFrame({"ERROR": termo + ' não encontrado.'}, index=[0])
 
-def busca_nome_comercial(termo):
+
+def busca_principio_por_nome_comercial(termo):
     dfl = dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]
     return dfl['PRINCIPIO ATIVO']
 
@@ -109,12 +110,12 @@ df = pd.read_json('listaISO.json')  # , encoding='UTF8')
 
 dfListaProdutos = df[["PRINCIPIO ATIVO", "PRODUTO", "APRESENTACAO"]]
 
-colunas_rename = ["PRINCIPIO ATIVO", "COMPOSICAO", "COMPONENTE"]
-dfListaRename = pd.read_csv('listaRENAME.csv', names=colunas_rename)
-colunas_rename.insert(3, 'id')
+dfListaRename = pd.read_csv('listaRENAME.csv', names=["PRINCIPIO ATIVO", "COMPOSICAO", "COMPONENTE"])
+
 dfListaRename['PRINCIPIO'] = dfListaRename["PRINCIPIO ATIVO"].apply(normaliza)
-dfListaRename['COMPOSICAO'] = dfListaRename["COMPOSICAO"].apply(normaliza)
-dfListaRename['COMPONENTE'] = dfListaRename["COMPONENTE"].apply(normaliza)
+dfListaRename['remedio'] = dfListaRename['PRINCIPIO'] + dfListaRename["COMPOSICAO"].apply(normaliza) + dfListaRename[
+    "COMPONENTE"].apply(normaliza)
+
 
 
 dfListaRename['id'] = dfListaRename.index
