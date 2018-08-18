@@ -49,7 +49,7 @@ def grava_falta_remedio (posto,remedio):
 def retorna_score_posto (posto,remedio):
     try:
         score = 0
-        BASE = 0.3
+        BASE = 1 ** (1 / 6)
         qtde_denuncias = len(denuncias[(posto, remedio)])
         for denuncia in denuncias[(posto, remedio)]:
             dias = (datetime.datetime.now() - denuncia).days
@@ -61,7 +61,7 @@ def retorna_score_posto (posto,remedio):
         return 0
 
 def ranking(qtde):
-    return denuncias
+    return str(denuncias)
 
 
 #port = int(os.environ.get("PORT", 7777))
