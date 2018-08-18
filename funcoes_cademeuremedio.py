@@ -9,16 +9,30 @@ def normaliza(termo):
     return unidecode.unidecode(termo.upper()).replace(",", "").replace('.', '')
 
 #metodo de entrada
-def lista_medicamentos(termo):
+def lista_medicamentos_sus(termo):
     termo = normaliza(termo)
     dfl = dfListaRename[
         dfListaRename["PRINCIPIO"].str.contains(termo)]  # dfm[dfm['PRINCIPIO ATIVO'].str.contains(termo)]
     # dfl = retira_nao_tem_no_sus(dfl)
     if (dfl.empty):
+        # encontra por nome comercial
+        # principios = busca_nome_comercial(termo)
+        # for principio in principios:
+
         return lista_por_nome_comercial(termo)
     else:
         return dfl[colunas_rename].head(10)
 
+
+def busca_nome_comercial(termo):
+    dfl = dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]
+    if (dfl.empty):
+        return pd.DataFrame(['0', termo + ' não encontrado', ''])
+    dfl = retira_nao_tem_no_sus(dfl)
+    if (dfl.empty):
+        return pd.DataFrame(['0', termo + ' não disponivel no SUS', ''])
+    else:
+        return dfl.head(10)
 
 def todos_remedios(termo):
     termo = normaliza(termo)

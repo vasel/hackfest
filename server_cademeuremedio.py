@@ -22,14 +22,14 @@ def helloWorld():
 @app.route('/lista/<termo>')
 @cross_origin()
 def lista(termo):
-    return funcoes_cademeuremedio.lista_medicamentos(termo).to_json(orient='split')
+    return funcoes_cademeuremedio.lista_medicamentos_sus(termo).to_json(orient='records')
     #return "Hello lista!"
 
 
-@app.route('/denuncia/<cod_posto>/<ean_medicamento>')
+@app.route('/denuncia/<cod_posto>/<cod_medicamento>')
 @cross_origin()
-def denuncia(cod_posto,ean_medicamento):
-    return str(funcoes_cademeuremedio.grava_falta_remedio(cod_posto, ean_medicamento))
+def denuncia(cod_posto, cod_medicamento):
+    return str(funcoes_cademeuremedio.grava_falta_remedio(cod_posto, cod_medicamento))
     #teste.lista_medicamentos(termo).to_json(orient='split')
     #return "Hello lista!"
 
