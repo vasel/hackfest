@@ -81,29 +81,41 @@ def grava_falta_remedio (posto,remedio):
     return len(denuncias[(posto, remedio)])
 
 
-def retorna_score_posto (posto,remedio):
+def grava_falta_remedio_passado(posto, remedio, diasAtras):
     try:
-        score = 0
+        denuncias[(posto, remedio)].insert(-1, datetime.datetime.now())
+    except:
+        denuncias[(posto, remedio)] = [datetime.datetime.now()]
+    return len(denuncias[(posto, remedio)])
+
+
+def score_posto(posto, remedio):
+    try:
         # base para o decaimento exponencial: score += base ** (dataAtual - dataDenuncia[i])
-        # ex.: dias  = 7    (uma semana)
+        # ex.: equiv = 7   (uma semana)
         #      fator = 1/10
         # ou seja, o score de uma denúncia hoje, equivale ao de 10 denúncias há 7 dias
+        score = 0
+        equiv = 7
         fator = 1 / 10
-        dias = 7
-        BASE = fator ** (1 / dias)
-
+        # prova: base^equiv = fator*base^0    =>    base^equiv = fator    =>    base = fator^(1/equiv)
+        BASE = fator ** (1 / equiv)
         qtde_denuncias = len(denuncias[(posto, remedio)])
         for denuncia in denuncias[(posto, remedio)]:
             dias = (datetime.datetime.now() - denuncia).days
-            # print (dias)
+            # apenas para as denúncias nos últimos 30 dias
             if dias <= 30:
-                score += BASE ** dias
+                score += BASE ** dias  # base ** (dataAtual - dataDenuncia[i])
         return score
     except:
         return 0
 
 def ranking(qtde):
     return str(denuncias)
+
+
+def gera_dados(qtde):
+    return 'ok'
 
 
 #port = int(os.environ.get("PORT", 7777))

@@ -30,14 +30,18 @@ def lista(termo):
 @cross_origin()
 def denuncia(cod_posto, cod_medicamento):
     return str(funcoes_cademeuremedio.grava_falta_remedio(cod_posto, cod_medicamento))
-    #teste.lista_medicamentos(termo).to_json(orient='split')
-    #return "Hello lista!"
 
 
-@app.route('/score/<cod_posto>/<ean_medicamento>')
+@app.route('/denuncia_passado/<cod_posto>/<cod_medicamento>/<dias>')
 @cross_origin()
-def score(cod_posto,ean_medicamento):
-    return str(funcoes_cademeuremedio.retorna_score_posto(cod_posto, ean_medicamento))
+def denuncia_passado(cod_posto, cod_medicamento, dias):
+    return str(funcoes_cademeuremedio.grava_falta_remedio_passado(cod_posto, cod_medicamento, dias))
+
+
+@app.route('/score/<cod_posto>/<cod_medicamento>')
+@cross_origin()
+def score(cod_posto, cod_medicamento):
+    return str(funcoes_cademeuremedio.score_posto(cod_posto, cod_medicamento))
     #teste.lista_medicamentos(termo).to_json(orient='split')
     #return "Hello lista!"
 
@@ -51,6 +55,12 @@ def ranking(qtde):
 @cross_origin()
 def todos_remedios(termo):
     return funcoes_cademeuremedio.todos_remedios(termo).to_json(orient='split')
+
+
+@app.route('/gera_dados/<qtde>')
+@cross_origin()
+def gera_dados(qtde):
+    return funcoes_cademeuremedio.gera_dados(qtde)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 7777))
