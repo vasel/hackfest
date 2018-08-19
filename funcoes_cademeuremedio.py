@@ -2,6 +2,7 @@
 import datetime
 
 import pandas as pd
+import requests
 import unidecode
 
 
@@ -124,6 +125,10 @@ def ranking(qtde):
 
 def gera_dados(qtde):
     return 'ok'
+
+
+def retorna_estabelecimentosf(latitude, longitude, raio):
+    return requests.get('http://mobile-aceite.tcu.gov.br:80/mapa-da-saude/rest/estabelecimentos?uf=' + uf)
 
 
 # if __name__ == "__main__":

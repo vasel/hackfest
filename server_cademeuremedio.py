@@ -1,5 +1,6 @@
 import os
 
+import requests
 from flask import Flask
 from flask_cors import CORS, cross_origin
 
@@ -12,14 +13,15 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 @app.route("/")
 @cross_origin()
 def helloWorld():
-    return "Funções: <br>" \
+    return "<a>/Funções: <br>" \
            "/lista/{termo}<br>" \
            "/denuncia/{cod_posto}/{ean_medicamento}<br>" \
            "/score/{cod_posto}/{ean_medicamento}<br>" \
-           "/ranking/{qtde}<br> "
+           "/ranking/{qtde}<br></a>"
 
 
 @app.route('/lista/<termo>')
+# @app.doc(params={'termo': 'nome do remédio para buscar'})
 @cross_origin()
 def lista(termo):
     return funcoes_cademeuremedio.lista_medicamentos_sus(termo).to_json(orient='records')
@@ -61,6 +63,19 @@ def todos_remedios(termo):
 @cross_origin()
 def gera_dados(qtde):
     return funcoes_cademeuremedio.gera_dados(qtde)
+
+
+@app.route('/estabelecimentos/latitude/<latitude>/longitude/<longitude>/raio/<raio>')
+@cross_origin()
+def estabelecimentos(latitude, longitude, raio):
+    r = requests.get(
+        'http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/estabelecimentos/latitude/' + latitude + '/longitude/' + longitude + '/raio/' + raio + '?categoria=POSTO%20DE%20SA%C3%9ADE')
+    # r = requests.get('http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/estabelecimentos/latitude/-27.5926371/longitude/-48.5576378/raio/50?categoria=POSTO%20DE%20SA%C3%9ADE')
+    return r.text
+
+
+#http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/estabelecimentos/latitude/27/longitude/-28/raio/30
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 7777))
