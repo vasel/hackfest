@@ -2,6 +2,7 @@
 import datetime
 
 import pandas as pd
+import requests
 import unidecode
 
 
@@ -103,6 +104,9 @@ def grava_falta_remedio_municipio(posto, remedio, municipio):
 
     return len(denuncias[(posto, remedio, municipio)])
 
+
+def retorna_estabelecimentosf(latitude, longitude, raio):
+    return requests.get('http://mobile-aceite.tcu.gov.br:80/mapa-da-saude/rest/estabelecimentos?uf=' + uf)
 
 # def retorna_denuncias_uf(uf):
 #     frame = pd.read_json('http://mobile-aceite.tcu.gov.br:80/mapa-da-saude/rest/estabelecimentos?uf=' + uf)
