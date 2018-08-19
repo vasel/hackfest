@@ -122,8 +122,16 @@ def grava_falta_remedio_municipio(posto, remedio, municipio):
 #     # denuncias_uf = denuncias[denuncias["posto"].str.contains(str(row["codUnidade"]))]
 
 def score_posto(posto, remedio, municipio):
+
     if (municipio in max_score.keys()):
-        return retorna_score_simples(posto, remedio, municipio) / max_score[(municipio)]
+        sc = retorna_score_simples(posto, remedio, municipio) / max_score[(municipio)]
+        if sc < 0.33:
+            return 1
+        if sc < 0.67:
+            return 2
+
+        return 3
+        # return retorna_score_simples(posto, remedio, municipio) / max_score[(municipio)]
     else:
         return 0
 

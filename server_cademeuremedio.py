@@ -68,7 +68,7 @@ def denuncias_uf(uf):
 @app.route('/score/<cod_posto>/<ean_medicamento>/<municipio>')
 @cross_origin()
 def score(cod_posto, ean_medicamento, municipio):
-    return str(funcoes_cademeuremedio.score_posto(cod_posto, ean_medicamento, municipio))
+    return '{"resultado":"' + str(funcoes_cademeuremedio.score_posto(cod_posto, ean_medicamento, municipio)) + '"}'
     # teste.lista_medicamentos(termo).to_json(orient='split')
     #return "Hello lista!"
 
