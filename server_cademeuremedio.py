@@ -1,5 +1,6 @@
 import os
 
+import requests
 from flask import Flask
 from flask_cors import CORS, cross_origin
 
@@ -43,10 +44,10 @@ def denuncia_municipio(cod_posto, cod_medicamento, municipio):
 @app.route('/estabelecimentos/latitude/<latitude>/longitude/<longitude>/raio/<raio>')
 @cross_origin()
 def estabelecimentos(latitude, longitude, raio):
-    return str(funcoes_cademeuremedio.retorna_estabelecimentosf(latitude, longitude, raio))
-    # teste.lista_medicamentos(termo).to_json(orient='split')
-    # return "Hello lista!"
-
+    r = requests.get(
+        'http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/estabelecimentos/latitude/' + latitude + '/longitude/' + longitude + '/raio/' + raio + '?categoria=POSTO%20DE%20SA%C3%9ADE')
+    # r = requests.get('http://mobile-aceite.tcu.gov.br/mapa-da-saude/rest/estabelecimentos/latitude/-27.5926371/longitude/-48.5576378/raio/50?categoria=POSTO%20DE%20SA%C3%9ADE')
+    return r.text
 
 @app.route('/denuncia_uf/<uf>/')
 @cross_origin()
