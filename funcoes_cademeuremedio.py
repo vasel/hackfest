@@ -133,7 +133,7 @@ def score_posto(posto, remedio, municipio):
         return 3
         # return retorna_score_simples(posto, remedio, municipio) / max_score[(municipio)]
     else:
-        return 0
+        return 1
 
 
 def retorna_score_simples(posto, remedio, municipio):
