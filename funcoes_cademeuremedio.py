@@ -13,7 +13,7 @@ def normaliza(termo):
             '"', ''))  # .strip()
 
 
-# metodo de entrada
+
 def lista_medicamentos_sus(termo):
     termo = normaliza(termo)
     dfl = dfListaRename[
@@ -25,11 +25,11 @@ def lista_medicamentos_sus(termo):
         for principio in principios:
             result = dfListaRename[dfListaRename["remedio"].str.contains(principio)]  # .split(';')[0].split(' ')[0])]
             if not result.empty:
-                result['comercial'] = termo
+                result['comercial'] = busca_nome_comercial(termo)
                 if dfl.empty:
                     dfl = result
                 else:
-                    dfl = pd.concat(dfl, result)
+                    dfl = pd.concat([dfl, result])
         if not dfl.empty:
             return dfl[['id', 'remedio', 'comercial']].head(10)
     else:
@@ -40,8 +40,17 @@ def lista_medicamentos_sus(termo):
 
 def busca_principio_por_nome_comercial(termo):
     dfl = dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]
-    return dfl['PRINCIPIO ATIVO']
+    if (dfl.empty):
+        return pd.DataFrame();
+    else:
+        return dfl['PRINCIPIO ATIVO']
 
+
+def busca_nome_comercial(termo):
+    try:
+        return dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]['PRODUTO'].iloc[0]
+    except:
+        return pd.DataFrame();
 
 def todos_remedios(termo):
     termo = normaliza(termo)
@@ -51,17 +60,16 @@ def todos_remedios(termo):
     return dfl.head(100)
 
 
-def lista_por_nome_comercial(termo):
-    termo = normaliza(termo)
-    dfl = dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]
-    if (dfl.empty):
-        return pd.DataFrame(['0', termo + ' não encontrado', ''])
-    dfl = retira_nao_tem_no_sus(dfl)
-    if (dfl.empty):
-        return pd.DataFrame(['0', termo + ' não disponivel no SUS', ''])
-    else:
-        return dfl.head(10)
-
+# def lista_por_nome_comercial(termo):
+#     termo = normaliza(termo)
+#     dfl = dfListaProdutos[dfListaProdutos['PRODUTO'].str.contains(termo)]
+#     if (dfl.empty):
+#         return pd.DataFrame(['0', termo + ' não encontrado', ''])
+#     dfl = retira_nao_tem_no_sus(dfl)
+#     if (dfl.empty):
+#         return pd.DataFrame(['0', termo + ' não disponivel no SUS', ''])
+#     else:
+#         return dfl.head(10)
 
 def retira_nao_tem_no_sus(lista):
     for row in lista.iterrows():

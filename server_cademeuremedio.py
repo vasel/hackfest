@@ -12,12 +12,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
 @cross_origin()
-def helloWorld():
-    return "Funções: <br>" \
-           "/lista/{termo}<br>" \
-           "/denuncia/{cod_posto}/{ean_medicamento}<br>" \
-           "/score/{cod_posto}/{ean_medicamento}<br>" \
-           "/ranking/{qtde}<br> "
+def raiz():
+    return "#CadêMeuRemêdio"
 
 
 @app.route('/lista/<termo>')
@@ -27,10 +23,10 @@ def lista(termo):
     # return "Hello lista!"
 
 
-@app.route('/denuncia/<cod_posto>/<cod_medicamento>')
-@cross_origin()
-def denuncia(cod_posto, cod_medicamento):
-    return str(funcoes_cademeuremedio.grava_falta_remedio(cod_posto, cod_medicamento))
+# @app.route('/denuncia/<cod_posto>/<cod_medicamento>')
+# @cross_origin()
+# def denuncia(cod_posto, cod_medicamento):
+#    return str(funcoes_cademeuremedio.grava_falta_remedio(cod_posto, cod_medicamento))
     # teste.lista_medicamentos(termo).to_json(orient='split')
 
 
@@ -59,11 +55,8 @@ def denuncias_uf(uf):
 
 # @app.route('/score/<cod_posto>/<ean_medicamento>')
 # @cross_origin()
-# def score(cod_posto,ean_medicamento):
+#def score(cod_posto,ean_medicamento):
 #     return str(funcoes_cademeuremedio.retorna_score_posto(cod_posto, ean_medicamento))
-#     #teste.lista_medicamentos(termo).to_json(orient='split')
-#     #return "Hello lista!"
-
 
 @app.route('/score/<cod_posto>/<ean_medicamento>/<municipio>')
 @cross_origin()
